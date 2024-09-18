@@ -1,0 +1,217 @@
+import {  Palette, VerticalBox, HorizontalBox, Button, StandardTableView, LineEdit, GridBox, ScrollView, ComboBox, ListView, GroupBox, StandardButton, TextEdit } from "std-widgets.slint";
+import {IconButton} from "icon_button.slint";
+import {TextButton} from "text_button.slint";
+import { Icons } from "styling.slint";
+
+export struct CommandItem {
+    uuid: string,
+    name: string,
+    code: string,
+    // description: string,
+    // icon: string,
+    // category: string,
+    // args: string,
+    // args_description: string,
+    // args_type: string,
+    // args_default: string,
+    // args_required: bool,
+    // args_optional: bool,
+    // args_optional_default: string,
+    // args_optional_description: string,
+    // args_optional_type: string,
+    // args_optional_required: bool,
+}
+
+export component NewCommandDialog inherits PopupWindow{
+    in-out property <CommandItem> model;
+
+    close-on-click: false;
+
+    Rectangle {
+        border-color: Palette.border;
+        border-width: 1px;
+        border-radius: 5px;
+        background: Palette.background;
+    }
+
+    Dialog {
+        width: 100%;
+        height: 100%;
+        GridBox {
+            Row {
+                Text {
+                    text: "Name";
+                }
+                name_edit := LineEdit {
+                    text: model.name;
+                    height: 32px;
+                }
+            }
+            Row {
+                Text {
+                    text: "Code";
+                }
+                code_edit := TextEdit {
+                    text: model.code;
+                }
+            }
+        }
+        
+
+
+        StandardButton { kind: ok; clicked => { 
+            root.close();
+            model.name = name_edit.text;
+            model.code = code_edit.text;
+            if (model.uuid == "") {
+                CommandHandler.add(model);
+            } else {
+                CommandHandler.edit(model);
+            }
+        }}
+        StandardButton { kind: cancel; clicked => { root.close();}}
+    }
+}
+
+
+export global CommandHandler {
+    in-out property <CommandItem> current_command;
+    callback run(CommandItem);
+    callback add(CommandItem);
+    callback edit(CommandItem);
+    callback delete(CommandItem);
+
+    callback dialog(CommandItem);
+}
+
+export component CommandButton {
+    in-out property <CommandItem> model:  {name: "test"} ;
+
+    HorizontalLayout {
+        TextButton {
+            text: model.name;
+        }
+        IconButton {
+            icon: Icons.play;
+            clicked => {
+                CommandHandler.run(model);
+            }
+        }
+        more_btn := IconButton {
+            icon: Icons.more;
+            clicked => {
+                popup.show();
+            }
+        }
+    }
+        
+    popup := PopupWindow {
+        close-on-click: false;
+        x: more_btn.x + more-btn.width/2;
+        y: more_btn.y + more_btn.height;
+        
+        Rectangle {
+            border-color: Palette.border;
+            border-width: 1px;
+            border-radius: 5px;
+            background: Palette.background;
+            height: 100%;
+            width: 100px;
+        }
+        
+        VerticalBox {
+            HorizontalLayout {
+                alignment: start;
+                IconButton {
+                    icon: Icons.edit;
+                    clicked => {
+                        CommandHandler.dialog(model)
+                    }
+                }
+                edit_btn := TextButton {
+                    text: "Edit";
+                    clicked => {
+                        CommandHandler.dialog(model)
+                    }
+                }
+            }
+            HorizontalLayout {
+                alignment: start;
+                IconButton {
+                    icon: Icons.delete;
+                    colorize: red;
+                    clicked => {
+                        CommandHandler.delete(model);
+                        popup.close();
+                    }
+                }
+                TextButton {
+                    text: "Delete";
+                    color: red;
+                    clicked => {
+                        CommandHandler.delete(model);
+                        popup.close();
+                    }
+                }
+            }
+            HorizontalLayout {
+                alignment: start;
+                IconButton {
+                    icon: Icons.arrow_left;
+                    clicked => {
+                        popup.close();
+                    }
+                }
+                TextButton {
+                    text: "Back";
+                    clicked => {
+                        popup.close();
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+export component CommandPlan inherits Rectangle {
+    in-out property <string> search_word <=> input.text;
+    in-out property <int> colnum: 1;
+    in-out property <[CommandItem]> commands: [
+        {name: "test"},
+        {name: "test2"},
+        {name: "test3"},
+    ];
+    
+    border-width: 1px;
+    border-color: Palette.border;
+    border-radius: 5px;
+    callback load_commands <=> sync.clicked;
+
+
+    VerticalBox {
+        HorizontalBox {
+            alignment: start;
+            IconButton {
+                icon: Icons.add;
+                clicked => {
+                    CommandHandler.dialog({name: "New Command", code: "print(\"Hello ZediBox!\")"})
+                }
+            }
+            sync := IconButton {
+                icon: Icons.sync;
+            }
+        }
+        input := LineEdit {
+            placeholder-text: "Serach...";
+        }
+    
+        ListView {
+            for x in ceil(commands.length/colnum): HorizontalBox {
+                for y in min(colnum, commands.length - x*colnum):  CommandButton{
+                    model: commands[x*colnum + y];
+                }
+            }
+        }
+    }
+}

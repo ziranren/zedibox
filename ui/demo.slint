@@ -1,0 +1,46 @@
+
+
+import { Button, LineEdit,HorizontalBox,ScrollView, VerticalBox, GridBox, StandardButton, CheckBox } from "std-widgets.slint";
+
+
+export component Example inherits Dialog {
+    Rectangle {
+        background: red;
+        Text {
+          text: "This is a dialog box";
+        }
+    }
+    StandardButton { kind: ok; }
+    StandardButton { kind: cancel; }
+}
+
+export component MainWindow inherits Window {
+    in-out property <bool> abc: false;
+    
+    VerticalBox {
+        Dialog {
+            title: "Hello world";
+            background: blue;
+            Text { 
+                text: "Hello worlddssssssssss!";
+            }
+            StandardButton { kind: ok;}
+            StandardButton { kind: cancel;}
+        }
+        Text {
+            text: "Devices:";
+        }
+        Button { 
+            text: "Add";
+            clicked => {
+                // debug("clicked");
+            }
+        }
+        CheckBox {
+            checked: abc;
+        }
+        Text {
+            text: abc ? "checked" : "unchecked";
+        }
+    }
+}

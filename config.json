@@ -1,0 +1,1 @@
+[{"name": "Hello ZediBox", "code": "zedi.log_info(\"Hello ZediBox!\")", "uuid": "Cett81o5ZP6hCaP0"}, {"code": "devices = zedi.selected()\nfor ad in devices:\n    zedi.log_info(dict(ad))", "name": "Selected Devices", "uuid": "18vGhwvAEAPlW9HY"}]

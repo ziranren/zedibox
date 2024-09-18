@@ -1,0 +1,51 @@
+import { Button, LineEdit,HorizontalBox,ScrollView, VerticalBox, GridBox } from "std-widgets.slint";
+import { DeviceTable, Device, DeviceHandler } from "widgets/devices.slint";
+import { CommandPlan, CommandItem, CommandHandler, NewCommandDialog} from "widgets/command.slint";
+import { Console } from "widgets/console.slint";
+
+export { CommandHandler, DeviceHandler }
+
+export component ZediBoxWindow inherits Window {
+    callback load_devices <=> dt.load_devices;
+    callback load_commands <=> cp.load_commands;
+
+    public function show_command_dialog(item: CommandItem) {
+        // debug("show_command_dialog", item);
+        CommandHandler.current_command = item;
+        command_dialog.show();
+        // debug("show_command_dialog end");
+    }
+    
+    preferred-width: 1280px;
+    preferred-height: 720px;
+    in-out property <[Device]> devices <=> dt.devices;
+    in-out property <[CommandItem]> commands <=> cp.commands;
+    in property <string> logs ;
+
+    command_dialog := NewCommandDialog {
+        width: root.width;
+        height: root.height;
+        model: CommandHandler.current_command;
+    }
+
+    GridBox {
+        cp := CommandPlan {
+            width:320px;
+            row: 0;
+            col: 0;
+            rowspan: 2;
+        }
+        dt := DeviceTable {
+            row: 0;
+            col: 1;
+        }
+            
+        console := Console{
+            vertical-stretch: 1;
+            row: 1;
+            col: 1;
+            logs: logs;
+        }
+        
+    }
+}

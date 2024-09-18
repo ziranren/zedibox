@@ -1,0 +1,123 @@
+import { Palette, VerticalBox, HorizontalBox, Button, StandardTableView, LineEdit, GridBox, ScrollView, ComboBox, ListView, CheckBox, Switch, StandardButton, TextEdit } from "std-widgets.slint";
+import { IconButton } from "icon_button.slint";
+import { Icons } from "styling.slint";
+import { TextButton } from "text_button.slint";
+
+export struct Device {
+    selected: bool,
+    port: int,
+    sn: string,
+    state: string,
+    signal: bool,
+    version: string
+}
+
+export global DeviceHandler {
+    callback select_all;
+    callback unselect_all;
+}
+
+export component SelectDeviceDialog inherits PopupWindow {
+    Rectangle {
+        border-color: Palette.border;
+        border-width: 1px;
+        border-radius: 5px;
+        background: Palette.background;
+        // height: 100%;
+        // width: 100%;
+
+        Dialog {
+            
+            Text {
+                text: "This is a dialog box";
+            }
+            StandardButton { kind: ok; }
+            StandardButton { kind: cancel; }
+        }
+    }
+    
+}
+
+export component DeviceTable{
+    callback load_devices <=> sync.clicked;
+
+    in-out property <[Device]> devices: [
+        { selected: true, port: 0, sn: "0123456789ABCDEF", state: "OFF", signal: true, version: "Version 10.12.121.0" },
+        { selected: true, port: 1, sn: "0123456789ABCDEF", state: "OFF", signal: false, version: "Version 10.12.121.0" },
+        { selected: false, port: 2, sn: "0123456789ABCDEF", state: "OFF", signal: true, version: "Version 10.12.121.0" },
+        { selected: true, port: 3, sn: "0123456789ABCDEF", state: "OFF", signal: false, version: "Version 10.12.121.0" },
+        { selected: false, port: 4, sn: "0123456789ABCDEF", state: "OFF", signal: true, version: "Version 10.12.121.0" },
+        { selected: false, port: 5, sn: "0123456789ABCDEF", state: "OFF", signal: true, version: "Version 10.12.121.0" },
+        { selected: false, port: 6, sn: "0123456789ABCDEF", state: "OFF", signal: true, version: "Version 10.12.121.0" },
+        { selected: false, port: 7, sn: "0123456789ABCDEF", state: "OFF", signal: true, version: "Version 10.12.121.0" },
+    ];
+
+    select-device := SelectDeviceDialog {
+        width: root.width;
+        height: root.height;
+    }
+    
+    VerticalBox {
+        padding: 0px;
+
+        HorizontalBox {
+            padding: 0px;
+            alignment: start;
+            // IconButton {
+            //     icon: Icons.add;
+            //     clicked => {
+            //         select-device.show();
+            //     }
+            // }
+            IconButton {
+                icon:Icons.select_all_on;
+                clicked => {
+                    DeviceHandler.select_all();
+                }
+            }
+            IconButton {
+                icon: Icons.select_all_off;
+                clicked => {
+                    DeviceHandler.unselect_all();
+                }
+            }
+            sync := IconButton {
+                icon: Icons.sync;
+            }
+        }
+
+        HorizontalLayout {
+            padding: 5px; 
+            spacing: 5px;
+            t0 := Text { width: 25px; overflow: elide; text: "#"; }
+            t1 := Text { width: 4rem; overflow: elide; text: "PORT"; }
+            t2 := Text { width: 16rem; overflow: elide; text: "SN"; }
+            t3 := Text { width: 8rem; text: "State"; }
+            t4 := Text { width: 60px; text: "Signal"; }
+            t5 := Text { horizontal-stretch: 1; text: "Version"; }
+        }
+
+        ListView {
+            for device[idx] in devices : HorizontalLayout {
+                CheckBox {
+                    checked: device.selected;
+                    toggled => {
+                        device.selected = self.checked;
+                    }
+                }
+                Text { width: t1.width; vertical-alignment: center; overflow: elide; text: device.port; }
+                Text { width: t2.width; vertical-alignment: center; overflow: elide; text: device.sn; }
+                Text { width: t3.width; vertical-alignment: center; overflow: elide; text: device.state; }
+                Switch {
+                    width: t4.width; 
+                    checked: device.signal;
+                    toggled => {
+                        device.signal = self.checked;
+                    }
+                }
+                Text { width: t5.width; vertical-alignment: center; text: device.version; }
+            }
+        }
+    }
+}
+

@@ -1,0 +1,29 @@
+import { TextEdit, Palette, VerticalBox, HorizontalBox, Button } from "std-widgets.slint";
+export component Console inherits Rectangle{
+    in property <string> logs: "hello";
+    // border-width: 1px;
+    // border-color: Palette.border;
+    preferred-width: 200px;
+    preferred-height: 200px;
+
+
+    VerticalBox {
+        // HorizontalBox {
+        //     Button {
+        //         text: "add";
+        //         clicked => {log("add new line")}
+        //     }
+        //     Button {
+        //         text: "clear";
+        //         clicked => {clear()}
+        //     }
+        // }
+        text_edit := TextEdit {
+            read-only: true;
+            text: logs;
+            // width: 100%;
+            // height: 100%;
+        }
+    }
+    
+}
