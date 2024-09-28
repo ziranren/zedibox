@@ -1,4 +1,4 @@
-import { Button, LineEdit,HorizontalBox,ScrollView, VerticalBox, GridBox } from "std-widgets.slint";
+import { Button, LineEdit,HorizontalBox,ScrollView, VerticalBox, GridBox, Palette } from "std-widgets.slint";
 import { DeviceTable, Device, DeviceHandler } from "widgets/devices.slint";
 import { CommandPlan, CommandItem, CommandHandler, NewCommandDialog} from "widgets/command.slint";
 import { Console } from "widgets/console.slint";
@@ -6,26 +6,25 @@ import { Console } from "widgets/console.slint";
 export { CommandHandler, DeviceHandler }
 
 export component ZediBoxWindow inherits Window {
-    callback load_devices <=> dt.load_devices;
-    callback load_commands <=> cp.load_commands;
-
-    public function show_command_dialog(item: CommandItem) {
-        // debug("show_command_dialog", item);
-        CommandHandler.current_command = item;
-        command_dialog.show();
-        // debug("show_command_dialog end");
-    }
-    
     preferred-width: 1280px;
     preferred-height: 720px;
     in-out property <[Device]> devices <=> dt.devices;
     in-out property <[CommandItem]> commands <=> cp.commands;
     in property <string> logs ;
+    callback load_devices <=> dt.load_devices;
+    callback load_commands <=> cp.load_commands;
+    
+
+    public function show_command_dialog(item: CommandItem) {
+        CommandHandler.current_command = item;
+        command_dialog.show();
+    }
+    
 
     command_dialog := NewCommandDialog {
         width: root.width;
         height: root.height;
-        model: CommandHandler.current_command;
+        model: CommandHandler.current_command;       
     }
 
     GridBox {
@@ -34,10 +33,19 @@ export component ZediBoxWindow inherits Window {
             row: 0;
             col: 0;
             rowspan: 2;
+            add => {
+                show_command_dialog({name: "New Command", code: "print(\"Hello ZediBox!\")"})
+            }
+            edit(command) => {
+                show_command_dialog(command)
+            }
         }
         dt := DeviceTable {
             row: 0;
             col: 1;
+            border-width: 1px;
+            border-color: Palette.border;
+            border-radius: 5px;
         }
             
         console := Console{
@@ -45,6 +53,9 @@ export component ZediBoxWindow inherits Window {
             row: 1;
             col: 1;
             logs: logs;
+            // border-width: 1px;
+            // border-color: Palette.border;
+            // border-radius: 5px;
         }
         
     }

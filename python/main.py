@@ -67,10 +67,10 @@ class ZediboxApp(zedibox.ZediBoxWindow):
                 break
         self.save_config()
 
-    @slint.callback(global_name="CommandHandler", name="dialog")
-    def dialog(self, item):
-        print('show dialog')
-        self.show_command_dialog(item)
+    # @slint.callback(global_name="CommandHandler", name="dialog")
+    # def dialog(self, item):
+    #     print('show dialog')
+    #     self.show_command_dialog(item)
     
     @slint.callback(global_name="DeviceHandler", name="select_all")
     def select_all(self):

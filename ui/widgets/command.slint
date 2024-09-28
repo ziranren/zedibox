@@ -3,6 +3,7 @@ import {IconButton} from "icon_button.slint";
 import {TextButton} from "text_button.slint";
 import { Icons } from "styling.slint";
 
+@rust-attr(derive(serde::Serialize, serde::Deserialize))
 export struct CommandItem {
     uuid: string,
     name: string,
@@ -52,6 +53,7 @@ export component NewCommandDialog inherits PopupWindow{
                     text: "Code";
                 }
                 code_edit := TextEdit {
+                    font-size: 16px;
                     text: model.code;
                 }
             }
@@ -80,12 +82,12 @@ export global CommandHandler {
     callback add(CommandItem);
     callback edit(CommandItem);
     callback delete(CommandItem);
-
-    callback dialog(CommandItem);
+    callback search(string);
 }
 
 export component CommandButton {
-    in-out property <CommandItem> model:  {name: "test"} ;
+    in-out property <CommandItem> model:  {name: "New Command"} ;
+    callback edit;
 
     HorizontalLayout {
         TextButton {
@@ -125,13 +127,13 @@ export component CommandButton {
                 IconButton {
                     icon: Icons.edit;
                     clicked => {
-                        CommandHandler.dialog(model)
+                        root.edit();
                     }
                 }
                 edit_btn := TextButton {
                     text: "Edit";
                     clicked => {
-                        CommandHandler.dialog(model)
+                        root.edit();
                     }
                 }
             }
@@ -187,16 +189,14 @@ export component CommandPlan inherits Rectangle {
     border-color: Palette.border;
     border-radius: 5px;
     callback load_commands <=> sync.clicked;
-
+    callback add <=> add.clicked;
+    callback edit(CommandItem);
 
     VerticalBox {
         HorizontalBox {
             alignment: start;
-            IconButton {
+            add := IconButton {
                 icon: Icons.add;
-                clicked => {
-                    CommandHandler.dialog({name: "New Command", code: "print(\"Hello ZediBox!\")"})
-                }
             }
             sync := IconButton {
                 icon: Icons.sync;
@@ -210,6 +210,9 @@ export component CommandPlan inherits Rectangle {
             for x in ceil(commands.length/colnum): HorizontalBox {
                 for y in min(colnum, commands.length - x*colnum):  CommandButton{
                     model: commands[x*colnum + y];
+                    edit => {
+                        root.edit(self.model);
+                    }
                 }
             }
         }

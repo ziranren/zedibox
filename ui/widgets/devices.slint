@@ -38,7 +38,7 @@ export component SelectDeviceDialog inherits PopupWindow {
     
 }
 
-export component DeviceTable{
+export component DeviceTable inherits Rectangle{
     callback load_devices <=> sync.clicked;
 
     in-out property <[Device]> devices: [
