@@ -1,6 +1,6 @@
 [
     {
-        "code": "zedi.log_info(\"Hello ZediBox!\")",
+        "code": "import plugin_api as zedi\nzedi.log_info(\"Hello ZediBox!\")",
         "name": "Hello ZediBox",
         "uuid": "Cett81o5ZP6hCaP0"
     },

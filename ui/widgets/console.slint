@@ -7,7 +7,7 @@ export component Console inherits Rectangle{
     callback log_info(string);
 
     log_info(msg) => {
-        root.logs = logs + "\n" + msg;
+        root.logs = logs + msg;
     }
 
     VerticalBox {

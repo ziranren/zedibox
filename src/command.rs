@@ -2,9 +2,15 @@ use crate::ui::CommandItem;
 use crate::ui::ZediBoxWindow;
 use crate::pybox;
 use std::io::Write;
+use std::path::Path;
 use std::{fs::File, io::BufReader};
 
 pub fn create_commands() -> Vec<CommandItem> {
+    let path = Path::new("config.json");
+    if path.exists() == false {
+        println!("config.json not found, create one");
+        return vec![];
+    }
     let config_file = File::open("config.json").expect("Failed to open config file");
     let reader = BufReader::new(config_file);
     let commands: Vec<CommandItem> =
@@ -25,7 +31,7 @@ pub fn run_command(command_item: CommandItem, zedi: &ZediBoxWindow) {
     zedi.invoke_log_info(format!("\nrun command: {0}\n", command_item.name).into());
     let python_code: &str = command_item.code.as_str();
     let result = pybox::run_py_code(python_code);
-
+    zedi.invoke_log_info("\n".into());
     match result {
         Ok(msg) => {
             zedi.invoke_log_info(msg.into());
