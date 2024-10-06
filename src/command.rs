@@ -25,7 +25,6 @@ pub fn run_command(command_item: CommandItem, zedi: &ZediBoxWindow) {
     let mut logs = zedi.get_logs();
     logs.push_str(&format!("\nrun command: {0}\n", command_item.name));
     let python_code: &str = command_item.code.as_str();
-    pyo3::prepare_freethreaded_python();
     let result = pybox::run_py_code(python_code);
 
     match result {

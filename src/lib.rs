@@ -3,6 +3,7 @@ pub mod device;
 pub mod ui;
 pub mod pybox;
 
+use pybox::init_pybox;
 use slint::{ComponentHandle, Model};
 use std::rc::Rc;
 use ui::{CommandHandler, CommandItem, Device, DeviceHandler, ZediBoxWindow};
@@ -126,6 +127,7 @@ pub fn init() -> State {
 
     zedi.global::<CommandHandler>().on_run({
         let ui_handle = zedi.as_weak();
+        init_pybox();
         move |command_item| {
             let zedi = ui_handle.upgrade().unwrap();
             command::run_command(command_item, &zedi)

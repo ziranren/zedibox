@@ -10,7 +10,7 @@ export component ZediBoxWindow inherits Window {
     preferred-height: 720px;
     in-out property <[Device]> devices <=> dt.devices;
     in-out property <[CommandItem]> commands <=> cp.commands;
-    in property <string> logs ;
+    in-out property <string> logs <=> console.logs;
     callback load_devices <=> dt.load_devices;
     callback load_commands <=> cp.load_commands;
     
@@ -52,10 +52,6 @@ export component ZediBoxWindow inherits Window {
             vertical-stretch: 1;
             row: 1;
             col: 1;
-            logs: logs;
-            // border-width: 1px;
-            // border-color: Palette.border;
-            // border-radius: 5px;
         }
         
     }

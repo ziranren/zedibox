@@ -1,1 +1,22 @@
-[{"name": "Hello ZediBox", "code": "zedi.log_info(\"Hello ZediBox!\")", "uuid": "Cett81o5ZP6hCaP0"}, {"code": "devices = zedi.selected()\nfor ad in devices:\n    zedi.log_info(dict(ad))", "name": "Selected Devices", "uuid": "18vGhwvAEAPlW9HY"}]
+[
+    {
+        "code": "zedi.log_info(\"Hello ZediBox!\")",
+        "name": "Hello ZediBox",
+        "uuid": "Cett81o5ZP6hCaP0"
+    },
+    {
+        "code": "devices = zedi.selected()\nfor ad in devices:\n    zedi.log_info(dict(ad))",
+        "name": "Selected Devices",
+        "uuid": "18vGhwvAEAPlW9HY"
+    },
+    {
+        "code": "import plugin_api as zedi\nprint(zedi)\nprint(zedi.hello())",
+        "name": "import",
+        "uuid": "2b951d0f-ce16-419a-8162-918759519548"
+    },
+    {
+        "code": "import plugin_api\nprint(plugin_api)\n",
+        "name": "hello",
+        "uuid": "c89a7889-1134-406a-a3cc-005b6787360d"
+    }
+]
