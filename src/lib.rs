@@ -126,8 +126,8 @@ pub fn init() -> State {
     });
 
     zedi.global::<CommandHandler>().on_run({
+        init_pybox(zedi.as_weak().unwrap());
         let ui_handle = zedi.as_weak();
-        init_pybox();
         move |command_item| {
             let zedi = ui_handle.upgrade().unwrap();
             command::run_command(command_item, &zedi)

@@ -1,4 +1,7 @@
 use pyo3::{prelude::*, types::PyDict};
+use crate::ui::ZediBoxWindow;
+
+static mut ZEDI : Option<ZediBoxWindow> = None;
 
 ///this is our Gadget that python plugin code can create, and rust app can then access natively.
 #[pyclass]
@@ -32,6 +35,13 @@ fn hello() -> PyResult<String> {
 #[pyfunction]
 fn log_info(msg: String)  -> PyResult<()> {
     println!("log: {}", msg);
+    unsafe {
+        match ZEDI {
+            Some(ref zedi) => zedi.invoke_log_info(msg.into()),
+            None => println!("ZediBoxWindow is not initialized"),
+        }
+    }
+    
     Ok(())
 }
 
@@ -44,7 +54,10 @@ pub fn plugin_api(m: &Bound<'_, PyModule>) -> PyResult<()> {
     Ok(())
 }
 
-pub fn init_pybox(){
+pub fn init_pybox(zedi: ZediBoxWindow){
+    unsafe {
+        ZEDI = Some(zedi);
+    }
     pyo3::append_to_inittab!(plugin_api);
     pyo3::prepare_freethreaded_python();
 }
