@@ -22,20 +22,18 @@ pub fn save_commands(commands: Vec<CommandItem>) {
 }
 
 pub fn run_command(command_item: CommandItem, zedi: &ZediBoxWindow) {
-    let mut logs = zedi.get_logs();
-    logs.push_str(&format!("\nrun command: {0}\n", command_item.name));
+    zedi.invoke_log_info(format!("\nrun command: {0}\n", command_item.name).into());
     let python_code: &str = command_item.code.as_str();
     let result = pybox::run_py_code(python_code);
 
     match result {
         Ok(msg) => {
-            logs.push_str(msg);
+            zedi.invoke_log_info(msg.into());
         }
         Err(msg) => {
-            logs.push_str(msg.as_str());
+            zedi.invoke_log_info(msg.into());
         }
     };
 
-    logs.push_str("\n");
-    zedi.set_logs(logs);
+    zedi.invoke_log_info("\n".into());
 }

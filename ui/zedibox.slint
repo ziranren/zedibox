@@ -13,6 +13,7 @@ export component ZediBoxWindow inherits Window {
     in-out property <string> logs <=> console.logs;
     callback load_devices <=> dt.load_devices;
     callback load_commands <=> cp.load_commands;
+    callback log_info <=> console.log_info;
     
 
     public function show_command_dialog(item: CommandItem) {
