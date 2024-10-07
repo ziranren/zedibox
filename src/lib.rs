@@ -43,6 +43,8 @@ pub fn init() -> State {
                     commands.set_row_data(index, command_item.clone());
                 }
             });
+            let x = commands.iter().map(|item| item).collect();
+            command::save_commands(x)
         }
     });
 
@@ -57,6 +59,8 @@ pub fn init() -> State {
                         commands.remove(index);
                     }
                 });
+            let x = commands.iter().map(|item| item).collect();
+            command::save_commands(x)
         }
     });
 
@@ -75,11 +79,12 @@ pub fn init() -> State {
 
     zedi.on_load_commands({
         let ui_handle = zedi.as_weak();
+        let commands = commands.clone();
         move || {
             if let Some(zedi) = ui_handle.upgrade() {
-                let commands = command::create_commands();
-                let commands_model = Rc::new(slint::VecModel::from(commands));
-                zedi.set_commands(commands_model.into());
+                // let commands = command::create_commands();
+                // let commands_model = Rc::new(slint::VecModel::from(commands));
+                zedi.set_commands(commands.clone().into());
             } else {
                 eprintln!("Failed to upgrade UI handle.");
             }

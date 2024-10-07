@@ -63,7 +63,9 @@ pub fn init_pybox(zedi: ZediBoxWindow){
 }
 pub fn run_py_code(code: &str) -> Result<&str, String> {
     let result = Python::with_gil(|py| {
-        let result = py.run_bound(code, None, None);
+        let globals = PyDict::new_bound(py);
+
+        let result = py.run_bound(code, Some(&globals), None);
         result.map(|_| "Python code executed successfully.").map_err(|e| e.to_string())
     });
     result
