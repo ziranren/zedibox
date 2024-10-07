@@ -6,6 +6,8 @@ import { Console } from "widgets/console.slint";
 export { CommandHandler, DeviceHandler }
 
 export component ZediBoxWindow inherits Window {
+    title: "ZediBox";
+    icon: @image-url("icon.png");
     preferred-width: 1280px;
     preferred-height: 720px;
     in-out property <[Device]> devices <=> dt.devices;
