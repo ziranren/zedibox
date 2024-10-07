@@ -1,6 +1,8 @@
 import { TextEdit, Palette, VerticalBox, HorizontalBox, Button } from "std-widgets.slint";
+import { IconButton } from "icon_button.slint";
+import { Icons } from "styling.slint";
 export component Console inherits Rectangle{
-    in-out property <string> logs: "hello";
+    in-out property <string> logs: "hello zedibox!\n";
     preferred-width: 200px;
     preferred-height: 200px;
 
@@ -12,6 +14,16 @@ export component Console inherits Rectangle{
 
     VerticalBox {
         padding: 0px;
+        HorizontalBox {
+            padding: 0px;
+            Rectangle {}
+            IconButton {
+                icon: Icons.text_clear;
+                clicked => {
+                    root.logs = "";
+                }
+            }
+        }
         text_edit := TextEdit {
             read-only: true;
             text: logs;
