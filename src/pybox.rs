@@ -1,5 +1,7 @@
 use pyo3::{prelude::*, types::PyDict};
+use slint::Model;
 use crate::ui::ZediBoxWindow;
+use crate::ui::Device;
 
 static mut ZEDI : Option<ZediBoxWindow> = None;
 
@@ -33,6 +35,24 @@ fn hello() -> PyResult<String> {
 }
 
 #[pyfunction]
+fn get_all_devices() -> PyResult<String> {
+    unsafe {
+        match ZEDI {
+            Some(ref zedi) => {
+                let devices = zedi.get_devices();
+                let x: Vec<Device> = devices.iter().map(|item| item).collect();
+                let json_str: String = serde_json::to_string(&x).unwrap();
+                return Ok(json_str.into());
+            },
+            None => {
+                println!("ZediBoxWindow is not initialized");
+                return Ok("".into());
+            },
+        };
+    };
+}
+
+#[pyfunction]
 fn log_info(msg: String)  -> PyResult<()> {
     println!("log: {}", msg);
     unsafe {
@@ -51,6 +71,7 @@ pub fn plugin_api(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<Gadget>()?;
     m.add_function(wrap_pyfunction!(hello, m)?)?;
     m.add_function(wrap_pyfunction!(log_info, m)?)?;
+    m.add_function(wrap_pyfunction!(get_all_devices, m)?)?;
     Ok(())
 }
 

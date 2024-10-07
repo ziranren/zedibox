@@ -3,6 +3,7 @@ import { IconButton } from "icon_button.slint";
 import { Icons } from "styling.slint";
 import { TextButton } from "text_button.slint";
 
+@rust-attr(derive(serde::Serialize, serde::Deserialize))
 export struct Device {
     selected: bool,
     port: int,
